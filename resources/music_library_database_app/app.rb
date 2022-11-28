@@ -18,4 +18,31 @@ class Application < Sinatra::Base
     album_repository = AlbumRepository.new 
     album_repository.all.map(&:title).join(', ')
   end
+
+  post '/albums' do 
+    title = params[:title]
+    release_year = params[:release_year]
+    artist_id = params[:artist_id]
+
+    album = Album.new 
+    album.title = title 
+    album.release_year = release_year
+    album.artist_id = artist_id
+
+    album_repository = AlbumRepository.new 
+    album_repository.create(album)
+  end
+
+  get '/artists' do 
+    artist_repository = ArtistRepository.new 
+    artist_repository.all.map(&:name).join(', ')
+  end
+
+  post '/artists' do 
+    artist = Artist.new 
+    artist_repository = ArtistRepository.new
+    artist.name = params[:name]
+    artist.genre = params[:genre]
+    artist_repository.create(artist)
+  end
 end
