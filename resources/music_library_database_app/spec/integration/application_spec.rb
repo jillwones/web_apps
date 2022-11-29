@@ -89,13 +89,20 @@ describe Application do
   end
 
   context 'POST /artists' do 
-    it 'creates a new artist record' do 
+    it 'creates a new artist record with valid params' do 
       response = post('/artists', name: 'Wild nothing', genre: 'Indie')
 
       repo = ArtistRepository.new 
       expect(response.status).to eq(200)
       expect(repo.all.last.name).to eq('Wild nothing')
       expect(repo.all.last.genre).to eq('Indie')
+    end
+    it 'fails when params arent valid' do 
+      response = post('/artists', name: 'Wild nothing', genre: '')
+
+      expect(response.status).to eq(400)
+      expect(response.body).to include('<p>Invalid Inputs!</p>')
+      expect(response.body).to include("<a href='/artists/new'> Try again...</a>")
     end
   end
 

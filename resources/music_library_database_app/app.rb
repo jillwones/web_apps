@@ -53,12 +53,17 @@ class Application < Sinatra::Base
   end
 
   post '/artists' do 
-    artist = Artist.new 
-    artist_repository = ArtistRepository.new
-    artist.name = params[:name]
-    artist.genre = params[:genre]
-    artist_repository.create(artist)
-    return erb(:artist_success)
+    if !params[:name].empty? and !params[:genre].empty?
+      artist = Artist.new 
+      artist_repository = ArtistRepository.new
+      artist.name = params[:name]
+      artist.genre = params[:genre]
+      artist_repository.create(artist)
+      return erb(:artist_success)
+    else 
+      status 400
+      return erb(:artist_failure)
+    end
   end
 
   get '/albums/:id' do 
