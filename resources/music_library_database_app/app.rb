@@ -14,6 +14,14 @@ class Application < Sinatra::Base
     also_reload 'lib/artist_repository'
   end
 
+  get '/albums/new' do 
+    return erb(:new_album)
+  end
+
+  get '/artists/new' do 
+    return erb(:new_artist)
+  end
+
   get '/albums' do 
     @album_repository = AlbumRepository.new 
     return erb(:all_albums)
@@ -24,13 +32,19 @@ class Application < Sinatra::Base
     release_year = params[:release_year]
     artist_id = params[:artist_id]
 
-    album = Album.new 
-    album.title = title 
-    album.release_year = release_year
-    album.artist_id = artist_id
+    if (title != nil) and (release_year.to_i.digits.length == 4) and (artist_id =~ /^[0-9]*$/)
+      album = Album.new 
+      album.title = title 
+      album.release_year = release_year
+      album.artist_id = artist_id
 
-    album_repository = AlbumRepository.new 
-    album_repository.create(album)
+      album_repository = AlbumRepository.new 
+      album_repository.create(album)
+      return erb(:album_success)
+    else
+      status 400
+      return erb(:album_failure)
+    end
   end
 
   get '/artists' do 
@@ -44,6 +58,7 @@ class Application < Sinatra::Base
     artist.name = params[:name]
     artist.genre = params[:genre]
     artist_repository.create(artist)
+    return erb(:artist_success)
   end
 
   get '/albums/:id' do 

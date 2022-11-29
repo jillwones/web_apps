@@ -23,8 +23,27 @@ describe Application do
     reset_tables
   end
 
+  context 'GET /albums/new' do 
+    it 'returns the form page' do 
+      response = get('/albums/new')
+
+      expect(response.status).to eq(200)
+      expect(response.body).to include('<h1>Add an album</h1>')
+    end
+  end
+
+  context 'GET /artists/new' do 
+    it 'returns the form page' do 
+      response = get('/artists/new')
+
+      expect(response.status).to eq(200)
+      expect(response.body).to include('<h1>Add an artist</h1>')
+      expect(response.body).to include('<label for="name">Name:</label><br>')
+    end
+  end
+
   context 'POST /albums' do 
-    it 'creates a new album record' do
+    it 'creates a new album record with valid params' do
        response = post('/albums', title: 'Voyage', release_year: 2022, artist_id: 2)
 
        repo = AlbumRepository.new 
@@ -32,6 +51,15 @@ describe Application do
        expect(response.status).to eq(200)
        expect(repo.all.last.title).to eq('Voyage')
        expect(repo.all.last.release_year).to eq('2022')
+       expect(response.body).to include('<p>Your album has been added!</p>')
+       expect(response.body).to include("<a href='/albums'> View all albums</a>")
+    end
+    it 'fails if invalid parameters' do 
+      response = post('/albums', title: 'Voyage', release_year: 201, artist_id: '3a')
+
+      expect(response.status).to eq(400)
+      expect(response.body).to include('<p>Invalid Inputs!</p>')
+      expect(response.body).to include("<a href='/albums/new'> Try again...</a>")
     end
   end
 
