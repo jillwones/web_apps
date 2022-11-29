@@ -12,7 +12,10 @@ class Application < Sinatra::Base
 
   post '/hello' do
     @name = params[:name]
-
-    return erb(:hello)
+    if @name =~ /^[a-zA-Z\s]+$/
+      return erb(:hello)
+    else 
+      return redirect('/')
+    end
   end
 end
