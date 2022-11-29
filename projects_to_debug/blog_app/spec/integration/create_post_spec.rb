@@ -16,7 +16,7 @@ describe Application do
         response = get('/')
 
         expect(response.status).to eq(200)
-        expect(response.body).to include('<form method="post" action="/posts">')
+        expect(response.body).to include('<form action="/posts" method="POST">')
         expect(response.body).to include('<input type="text" name="title" />')
         expect(response.body).to include('<input type="text" name="content" />')
         expect(response.body).to include('<input type="text" name="tags" />')
@@ -29,12 +29,12 @@ describe Application do
           '/posts',
           title: 'A new post',
           content: 'Hi there',
-          tags: 'random,things'
+          tags: 'random,nature'
         )
 
         response = get('/')
 
-        expect(response.body).to include('<h3>A new post</h3>')
+        expect(response.body).to include('<h3> A new post </h3>')
       end
     end
   end
