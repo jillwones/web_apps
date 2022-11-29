@@ -15,8 +15,8 @@ class Application < Sinatra::Base
   end
 
   get '/albums' do 
-    album_repository = AlbumRepository.new 
-    album_repository.all.map(&:title).join(', ')
+    @album_repository = AlbumRepository.new 
+    return erb(:all_albums)
   end
 
   post '/albums' do 
@@ -44,5 +44,20 @@ class Application < Sinatra::Base
     artist.name = params[:name]
     artist.genre = params[:genre]
     artist_repository.create(artist)
+  end
+
+  get '/albums/:id' do 
+    album_repository = AlbumRepository.new 
+    album = album_repository.find(params[:id])
+    artist_id = album.artist_id
+
+    artist_repository = ArtistRepository.new 
+    artist = artist_repository.find(artist_id)
+
+    @album_name = album.title
+    @artist_name = artist.name 
+    @release_year = album.release_year
+
+    return erb(:individual_albums)
   end
 end
